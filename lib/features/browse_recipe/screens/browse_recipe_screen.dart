@@ -15,7 +15,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  String _searchQuery = 'Chicken';
   List<Recipe> _savedRecipes = [];
 
   void _onTabTapped(int index) {
@@ -26,7 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onIngredientSearch(String ingredient) {
     setState(() {
-      _searchQuery = ingredient;
       _currentIndex = 0;
     });
   }
