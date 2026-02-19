@@ -1,6 +1,6 @@
 ﻿// MyCookbookScreen.dart\n// Placeholder screen for the MyCookbook feature.\n\nimport 'package:flutter/material.dart';\n\n// TODO: Implement MyCookbook screen\n
 
-import 'package:dishcovery/features/recipe_detail/screens/Recipe.dart';
+import 'package:dishcovery/features/recipe_detail/screens/recipe.dart';
 import 'package:dishcovery/features/recipe_detail/screens/recipe_card.dart';
 import 'package:dishcovery/features/recipe_detail/screens/recipe_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -27,10 +27,7 @@ class CookbookScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE5F5E1),
-              Colors.white,
-            ],
+            colors: [Color(0xFFE5F5E1), Colors.white],
           ),
         ),
         child: SafeArea(
@@ -51,10 +48,7 @@ class CookbookScreen extends StatelessWidget {
                         color: Color(0xFF111827),
                       ),
                     ),
-                    Text(
-                      '👩‍🍳',
-                      style: TextStyle(fontSize: 24),
-                    ),
+                    Text('👩‍🍳', style: TextStyle(fontSize: 24)),
                   ],
                 ),
               ),
@@ -66,10 +60,7 @@ class CookbookScreen extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              '📖',
-                              style: TextStyle(fontSize: 80),
-                            ),
+                            Text('📖', style: TextStyle(fontSize: 80)),
                             const SizedBox(height: 16),
                             const Text(
                               'No saved recipes yet',
@@ -95,11 +86,11 @@ class CookbookScreen extends StatelessWidget {
                         child: GridView.builder(
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            childAspectRatio: 0.75,
-                          ),
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 16,
+                                mainAxisSpacing: 16,
+                                childAspectRatio: 0.75,
+                              ),
                           itemCount: savedRecipes.length,
                           itemBuilder: (context, index) {
                             return RecipeCard(
@@ -136,22 +127,10 @@ class CookbookScreen extends StatelessWidget {
         selectedFontSize: 12,
         unselectedFontSize: 12,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'My Cookbook',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'My Cookbook'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );

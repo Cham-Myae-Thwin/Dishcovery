@@ -1,7 +1,7 @@
 ﻿import 'package:dishcovery/features/ingredient_search/screens/IngredientSearchScreen.dart';
-import 'package:dishcovery/features/profile/screens/profile_screen.dart';
 import 'package:dishcovery/features/my_cookbook/screens/my_cookbook_screen.dart';
-import 'package:dishcovery/features/recipe_detail/screens/Recipe.dart';
+import 'package:dishcovery/features/profile/screens/profile_screen.dart';
+import 'package:dishcovery/features/recipe_detail/screens/recipe.dart';
 import 'package:dishcovery/features/recipe_detail/screens/recipe_card.dart';
 import 'package:dishcovery/features/recipe_detail/screens/recipe_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -78,10 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE5F5E1),
-              Colors.white,
-            ],
+            colors: [Color(0xFFE5F5E1), Colors.white],
           ),
         ),
         child: SafeArea(
@@ -124,8 +121,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.tune,
-                              size: 16, color: const Color(0xFF059669)),
+                          Icon(
+                            Icons.tune,
+                            size: 16,
+                            color: const Color(0xFF059669),
+                          ),
                           const SizedBox(width: 8),
                           Text(
                             'Sort',
@@ -149,11 +149,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: GridView.builder(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 0.75,
-                    ),
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                          childAspectRatio: 0.75,
+                        ),
                     itemCount: mockRecipes.length,
                     itemBuilder: (context, index) {
                       return RecipeCard(
@@ -190,22 +190,10 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedFontSize: 12,
         unselectedFontSize: 12,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'My Cookbook',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'My Cookbook'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );

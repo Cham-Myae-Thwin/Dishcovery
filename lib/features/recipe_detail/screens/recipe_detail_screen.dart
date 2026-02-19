@@ -1,4 +1,4 @@
-﻿import 'package:dishcovery/features/recipe_detail/screens/Recipe.dart';
+﻿import 'package:dishcovery/features/recipe_detail/screens/recipe.dart';
 import 'package:flutter/material.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
@@ -41,10 +41,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE5F5E1),
-              Colors.white,
-            ],
+            colors: [Color(0xFFE5F5E1), Colors.white],
           ),
         ),
         child: CustomScrollView(
@@ -104,10 +101,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(
-                      widget.recipe.image,
-                      fit: BoxFit.cover,
-                    ),
+                    Image.network(widget.recipe.image, fit: BoxFit.cover),
                     // Gradient overlay
                     Container(
                       decoration: BoxDecoration(
@@ -142,8 +136,11 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                             const SizedBox(height: 12),
                             Row(
                               children: [
-                                const Icon(Icons.access_time,
-                                    color: Colors.white, size: 20),
+                                const Icon(
+                                  Icons.access_time,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 8),
                                 Text(
                                   widget.recipe.time,
@@ -153,8 +150,11 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 24),
-                                Icon(Icons.circle,
-                                    color: _getDifficultyColor(), size: 20),
+                                Icon(
+                                  Icons.circle,
+                                  color: _getDifficultyColor(),
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 8),
                                 Text(
                                   widget.recipe.difficulty,
@@ -164,8 +164,11 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 24),
-                                const Icon(Icons.people,
-                                    color: Colors.white, size: 20),
+                                const Icon(
+                                  Icons.people,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 8),
                                 Text(
                                   widget.recipe.servings,
