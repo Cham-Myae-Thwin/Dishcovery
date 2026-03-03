@@ -50,11 +50,11 @@ class RecipeCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
+                              BoxShadow(
+                                color: const Color.fromRGBO(0, 0, 0, 0.05),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
           ],
         ),
         child: Column(

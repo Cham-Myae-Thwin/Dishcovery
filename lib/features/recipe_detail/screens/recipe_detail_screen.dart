@@ -50,7 +50,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
             SliverAppBar(
               expandedHeight: 300,
               pinned: true,
-              backgroundColor: const Color(0xFFE5F5E1).withOpacity(0.95),
+              backgroundColor: const Color.fromRGBO(229, 245, 225, 0.95),
               elevation: 0,
               leading: Container(
                 margin: const EdgeInsets.all(8),
@@ -59,7 +59,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: const Color.fromRGBO(0, 0, 0, 0.1),
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
@@ -78,7 +78,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                      color: const Color.fromRGBO(0, 0, 0, 0.1),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -110,7 +110,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black.withOpacity(0.6),
+                      const Color.fromRGBO(0, 0, 0, 0.6),
                           ],
                         ),
                       ),

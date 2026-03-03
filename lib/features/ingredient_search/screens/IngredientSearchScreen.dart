@@ -81,7 +81,7 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
                           Border.all(color: const Color(0xFFE5E7EB), width: 2),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: const Color.fromRGBO(0, 0, 0, 0.05),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -138,7 +138,7 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
                             borderRadius: BorderRadius.circular(24),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
+                                color: const Color.fromRGBO(0, 0, 0, 0.05),
                                 blurRadius: 4,
                                 offset: const Offset(0, 2),
                               ),
@@ -159,9 +159,9 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
                   const SizedBox(height: 60),
                   Text(
                     '🥘',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 60,
-                      color: Colors.black.withOpacity(0.2),
+                      color: Color.fromRGBO(0, 0, 0, 0.2),
                     ),
                   ),
                   const SizedBox(height: 40),

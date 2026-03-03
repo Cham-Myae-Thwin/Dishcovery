@@ -1,1 +1,25 @@
-﻿[]
+﻿[
+  {
+    "id": "r001",
+    "title": "Spicy Chicken Tacos",
+    "cookingTime": 15,
+    "difficulty": "Easy",
+    "servings": 2,
+    "mainIngredient": "Chicken",
+    "ingredients": [
+      "2 boneless chicken breasts",
+      "1 tablespoon olive oil",
+      "1 teaspoon chili powder"
+    ],
+    "instructions": [
+      "Cut chicken breasts into small bite-sized pieces and season with chili powder, cumin, paprika, salt, and pepper.",
+      "Heat olive oil in a large pan over medium-high heat.",
+      "Add seasoned chicken to the pan and cook for 6–8 minutes, stirring occasionally, until golden brown and cooked through.",
+      "While chicken cooks, warm tortillas in a separate pan or microwave for 20 seconds.",
+      "Assemble tacos by placing chicken on tortillas and topping with lettuce, tomatoes, and cheese. Serve immediately."
+    ],
+    "isSavedInCookbook": false,
+    "category": ["Mexican", "Quick", "Chicken"]
+  }
+]
+[]
