@@ -96,8 +96,8 @@ class CookbookScreen extends StatelessWidget {
                             return RecipeCard(
                               recipe: savedRecipes[index],
                               isSaved: true,
-                              onToggleSave: () =>
-                                  onToggleSave(savedRecipes[index]),
+                              onToggleSave: () async =>
+                                  await onToggleSave(savedRecipes[index]),
                               onTap: () {
                                 Navigator.push(
                                   context,

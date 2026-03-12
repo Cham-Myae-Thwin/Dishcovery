@@ -2,8 +2,10 @@
 
 class WelcomeScreen extends StatelessWidget {
   final VoidCallback onGetStarted;
+  final VoidCallback? onBack;
 
-  const WelcomeScreen({Key? key, required this.onGetStarted}) : super(key: key);
+  const WelcomeScreen({Key? key, required this.onGetStarted, this.onBack})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +15,7 @@ class WelcomeScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE5F5E1),
-              Colors.white,
-            ],
+            colors: [Color(0xFFE5F5E1), Colors.white],
           ),
         ),
         child: SafeArea(
@@ -26,7 +25,18 @@ class WelcomeScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 12),
+                  // Back button (optional)
+                  if (onBack != null)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: onBack,
+                        color: Colors.black,
+                      ),
+                    ),
+                  const SizedBox(height: 12),
                   // Logo/Icon with animation
                   TweenAnimationBuilder(
                     tween: Tween<double>(begin: 0, end: 1),
@@ -34,10 +44,7 @@ class WelcomeScreen extends StatelessWidget {
                     builder: (context, double value, child) {
                       return Transform.scale(
                         scale: value,
-                        child: const Text(
-                          '🍳',
-                          style: TextStyle(fontSize: 80),
-                        ),
+                        child: const Text('🍳', style: TextStyle(fontSize: 80)),
                       );
                     },
                   ),
@@ -57,10 +64,7 @@ class WelcomeScreen extends StatelessWidget {
                   // Tagline
                   const Text(
                     'Discover delicious recipes with ingredients you have at home',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFF6B7280),
-                    ),
+                    style: TextStyle(fontSize: 16, color: Color(0xFF6B7280)),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 40),
@@ -134,10 +138,7 @@ class WelcomeScreen extends StatelessWidget {
             shape: BoxShape.circle,
           ),
           child: Center(
-            child: Text(
-              emoji,
-              style: const TextStyle(fontSize: 24),
-            ),
+            child: Text(emoji, style: const TextStyle(fontSize: 24)),
           ),
         ),
         const SizedBox(width: 16),
@@ -156,10 +157,7 @@ class WelcomeScreen extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 description,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF6B7280),
-                ),
+                style: const TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
               ),
             ],
           ),

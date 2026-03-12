@@ -1,19 +1,21 @@
 ﻿import 'package:dishcovery/features/recipe_detail/screens/recipe.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dishcovery/providers/saved_recipes_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
-class RecipeDetailScreen extends StatefulWidget {
+class RecipeDetailScreen extends ConsumerStatefulWidget {
   final Recipe recipe;
 
   const RecipeDetailScreen({Key? key, required this.recipe}) : super(key: key);
 
   @override
-  State<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
+  ConsumerState<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
 }
 
-class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
-  bool _isSaved = false;
+class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
   bool _showAllIngredients = false;
-  final Set<int> _checkedIngredients = {};
+  // removed checked-ingredients state (no checkboxes anymore)
 
   Color _getDifficultyColor() {
     switch (widget.recipe.difficulty) {
@@ -78,7 +80,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                      color: const Color.fromRGBO(0, 0, 0, 0.1),
+                        color: const Color.fromRGBO(0, 0, 0, 0.1),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -86,13 +88,60 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   ),
                   child: IconButton(
                     icon: Icon(
-                      _isSaved ? Icons.favorite : Icons.favorite_border,
-                      color: _isSaved ? Colors.red : Colors.black,
+                      // reflect saved state from provider
+                      ref.watch(savedRecipesProvider).contains(widget.recipe.id)
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      color:
+                          ref
+                              .watch(savedRecipesProvider)
+                              .contains(widget.recipe.id)
+                          ? Colors.red
+                          : Colors.black,
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _isSaved = !_isSaved;
-                      });
+                    onPressed: () async {
+                      final notifier = ref.read(savedRecipesProvider.notifier);
+                      final nowSaved = await notifier.toggleAndGet(
+                        widget.recipe.id,
+                      );
+
+                      final messenger = ScaffoldMessenger.of(context);
+                      messenger.hideCurrentSnackBar();
+                      messenger.showSnackBar(
+                        SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: nowSaved
+                              ? const Color(0xFFDCFCE7)
+                              : const Color(0xFFFEE2E2),
+                          elevation: 6,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          content: Row(
+                            children: [
+                              Text(
+                                nowSaved ? '💾' : '🗑️',
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  nowSaved
+                                      ? 'Saved to My Cookbook'
+                                      : 'Removed from My Cookbook',
+                                  style: TextStyle(
+                                    color: nowSaved
+                                        ? Colors.green[900]
+                                        : Colors.red[900],
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -101,7 +150,28 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(widget.recipe.image, fit: BoxFit.cover),
+                    CachedNetworkImage(
+                      imageUrl: widget.recipe.image,
+                      fit: BoxFit.cover,
+                      memCacheWidth: 600,
+                      memCacheHeight: 400,
+                      fadeInDuration: const Duration(milliseconds: 200),
+                      placeholder: (context, url) => Container(
+                        color: const Color(0xFFF3F4F6),
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation(
+                              Color(0xFF059669),
+                            ),
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        color: const Color(0xFFF3F4F6),
+                        child: const Center(child: Icon(Icons.broken_image)),
+                      ),
+                    ),
                     // Gradient overlay
                     Container(
                       decoration: BoxDecoration(
@@ -110,7 +180,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                      const Color.fromRGBO(0, 0, 0, 0.6),
+                            const Color.fromRGBO(0, 0, 0, 0.6),
                           ],
                         ),
                       ),
@@ -210,33 +280,39 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    ...displayedIngredients.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final ingredient = entry.value;
-                      return CheckboxListTile(
-                        contentPadding: EdgeInsets.zero,
-                        value: _checkedIngredients.contains(index),
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (value == true) {
-                              _checkedIngredients.add(index);
-                            } else {
-                              _checkedIngredients.remove(index);
-                            }
-                          });
-                        },
-                        title: Text(
-                          ingredient,
-                          style: TextStyle(
-                            decoration: _checkedIngredients.contains(index)
-                                ? TextDecoration.lineThrough
-                                : null,
-                            color: _checkedIngredients.contains(index)
-                                ? Colors.grey
-                                : Colors.black,
-                          ),
+                    ...displayedIngredients.map((ingredient) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 12,
                         ),
-                        activeColor: const Color(0xFF059669),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF9FAFB),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: const Color(0xFFE5E7EB)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Text(
+                              '•',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Color(0xFF059669),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                ingredient,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Color(0xFF111827),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     }).toList(),
                     if (hasMoreIngredients)

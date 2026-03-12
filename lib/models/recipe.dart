@@ -62,10 +62,22 @@ class Recipe {
       difficulty: json['difficulty'] as String? ?? '',
       servings: (json['servings'] as num?)?.toInt() ?? 1,
       mainIngredient: json['mainIngredient'] as String? ?? '',
-      ingredients: (json['ingredients'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
-      instructions: (json['instructions'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      ingredients:
+          (json['ingredients'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      instructions:
+          (json['instructions'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
       isSavedInCookbook: json['isSavedInCookbook'] as bool? ?? false,
-      category: (json['category'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      category:
+          (json['category'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
     );
   }
 
@@ -87,4 +99,5 @@ class Recipe {
   @override
   String toString() => jsonEncode(toJson());
 }
+
 // recipe.dart\n// Recipe model placeholder\n\nclass Recipe {\n  // TODO: define model fields\n}\n

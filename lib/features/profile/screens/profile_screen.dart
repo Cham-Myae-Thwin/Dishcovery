@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   final int currentIndex;
   final Function(int) onTabTapped;
   final int savedRecipesCount;
@@ -11,6 +12,74 @@ class ProfileScreen extends StatelessWidget {
     required this.onTabTapped,
     this.savedRecipesCount = 0,
   }) : super(key: key);
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String _userName = 'Jane Doe';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserName();
+  }
+
+  Future<void> _loadUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString('user_name');
+    if (name != null && name.isNotEmpty) {
+      setState(() => _userName = name);
+    }
+  }
+
+  Future<void> _saveUserName(String name) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_name', name);
+    setState(() => _userName = name);
+  }
+
+  void _showEditNameDialog() {
+    final controller = TextEditingController(text: _userName);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Text('Edit name'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter your display name',
+            ),
+            autofocus: true,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final newName = controller.text.trim();
+                if (newName.isNotEmpty) {
+                  _saveUserName(newName);
+                }
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF059669),
+              ),
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,19 +122,51 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Jane Doe',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF111827),
+                    // Editable name with a visible edit icon
+                    GestureDetector(
+                      onTap: _showEditNameDialog,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _userName,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF111827),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          // Circular edit icon with brand color
+                          InkWell(
+                            onTap: _showEditNameDialog,
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF059669),
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.edit,
+                                size: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      'jane.doe@email.com',
-                      style: TextStyle(fontSize: 16, color: Color(0xFF6B7280)),
-                    ),
+                    // Email removed per request
                   ],
                 ),
               ),
@@ -90,8 +191,8 @@ class ProfileScreen extends StatelessWidget {
                       _buildMenuItem(
                         icon: Icons.book,
                         label: 'My Cookbook',
-                        count: savedRecipesCount.toString(),
-                        onTap: () {},
+                        count: widget.savedRecipesCount.toString(),
+                        onTap: () => widget.onTabTapped(2),
                       ),
                       Divider(height: 1, color: Colors.grey[200]),
                       _buildMenuItem(
@@ -121,8 +222,8 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: onTabTapped,
+        currentIndex: widget.currentIndex,
+        onTap: widget.onTabTapped,
         type: BottomNavigationBarType.fixed,
         backgroundColor: const Color(0xFF059669),
         selectedItemColor: Colors.white,
