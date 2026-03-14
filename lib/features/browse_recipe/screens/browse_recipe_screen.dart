@@ -21,25 +21,21 @@ class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _currentIndex = 0;
-  // saved recipes are now managed by Riverpod savedRecipesProvider
   late List<Recipe> _visibleRecipes;
   SortMode _sortMode = SortMode.none;
 
   @override
   void initState() {
     super.initState();
-    // start by showing all available recipes
     _visibleRecipes = List<Recipe>.from(mockRecipes);
   }
 
   int _parseMinutes(String timeStr) {
-    // Expect formats like "15 min" or "1 hr 20 min". Extract first number as minutes when possible.
     final m = RegExp(r"(\d+)").firstMatch(timeStr);
     if (m != null) return int.tryParse(m.group(0) ?? '0') ?? 0;
     return 0;
@@ -76,17 +72,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
-      // when returning to Home/Browse, show all recipes again (clear search results)
       if (index == 0) {
         _visibleRecipes = List<Recipe>.from(mockRecipes);
-        // re-apply sorting if selected
         if (_sortMode != SortMode.none) _applySort();
       }
     });
   }
 
   void _onIngredientSearch(String ingredient) {
-    // apply a simple, case-insensitive filter against recipe ingredients and title
     final query = ingredient.trim().toLowerCase();
     setState(() {
       _currentIndex = 0;
@@ -105,7 +98,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _toggleSaveRecipe(Recipe recipe) async {
-    // use provider to toggle saved state and show a nice snack
     final notifier = ref.read(savedRecipesProvider.notifier);
     final nowSaved = await notifier.toggleAndGet(recipe.id);
 
@@ -150,6 +142,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final savedRecipes = mockRecipes
         .where((r) => savedIds.contains(r.id))
         .toList();
+
     if (_currentIndex == 1) {
       return IngredientSearchScreen(
         onSearch: _onIngredientSearch,
@@ -179,332 +172,228 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFE5F5E1), Colors.white],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF059669), Color(0xFF10B981), Color(0xFF34D399)],
           ),
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              // Header
-              Container(
-                color: Colors.transparent,
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isWide = constraints.maxWidth > 900;
+              final isMedium = constraints.maxWidth > 600;
+              final crossAxisCount = isWide
+                  ? 4
+                  : isMedium
+                  ? 3
+                  : 2;
+
+              return Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isWide ? 32 : 20,
+                      vertical: 18,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                'Find your next craving',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                'Browse quick, easy recipes picked just for you.',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFFE5E7EB),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        _SortMenu(
+                          sortMode: _sortMode,
+                          onSelected: (mode) {
+                            _sortMode = mode;
+                            _applySort();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(24),
+                        ),
+                      ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Find Your next Craving!',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF111827),
+                          const SizedBox(height: 12),
+                          Container(
+                            width: 40,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE5E7EB),
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+
+                          if (_sortMode != SortMode.none)
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isWide
+                                    ? 32
+                                    : isMedium
+                                    ? 24
+                                    : 16,
+                                vertical: 8,
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFE6FFEF),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: const Color(0xFFDCFCE7),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.filter_list,
+                                          size: 16,
+                                          color: Color(0xFF059669),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          _sortMode == SortMode.timeAsc
+                                              ? 'Time: Low → High'
+                                              : _sortMode == SortMode.timeDesc
+                                              ? 'Time: High → Low'
+                                              : _sortMode ==
+                                                    SortMode.difficultyEasy
+                                              ? 'Difficulty: Easy'
+                                              : _sortMode ==
+                                                    SortMode.difficultyMedium
+                                              ? 'Difficulty: Medium'
+                                              : 'Difficulty: Hard',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFF065F46),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _sortMode = SortMode.none;
+                                        _applySort();
+                                      });
+                                    },
+                                    child: const Text(
+                                      'Reset',
+                                      style: TextStyle(
+                                        color: Color(0xFF065F46),
+                                      ),
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    '${_visibleRecipes.length} results',
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                isWide
+                                    ? 32
+                                    : isMedium
+                                    ? 24
+                                    : 16,
+                              ),
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 350),
+                                switchInCurve: Curves.easeOutQuart,
+                                switchOutCurve: Curves.easeInQuart,
+                                child: GridView.builder(
+                                  key: ValueKey<int>(
+                                    _visibleRecipes.length + _sortMode.index,
+                                  ),
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: crossAxisCount,
+                                        crossAxisSpacing: 16,
+                                        mainAxisSpacing: 16,
+                                        childAspectRatio: isWide
+                                            ? 0.9
+                                            : isMedium
+                                            ? 0.8
+                                            : 0.72,
+                                      ),
+                                  itemCount: _visibleRecipes.length,
+                                  itemBuilder: (context, index) {
+                                    final recipe = _visibleRecipes[index];
+                                    return RecipeCard(
+                                      recipe: recipe,
+                                      isSaved: _isRecipeSaved(recipe),
+                                      onToggleSave: () async =>
+                                          await _toggleSaveRecipe(recipe),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                RecipeDetailScreen(
+                                                  recipe: recipe,
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    // Sort / Filter menu
-                    PopupMenuButton<SortMode>(
-                      onSelected: (mode) {
-                        _sortMode = mode;
-                        _applySort();
-                      },
-                      itemBuilder: (context) => [
-                        PopupMenuItem<SortMode>(
-                          value: SortMode.none,
-                          child: ListTile(
-                            leading: const Text(
-                              '✨',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            title: const Text(
-                              'Default (All)',
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            subtitle: const Text(
-                              'Show every recipe',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                            trailing: _sortMode == SortMode.none
-                                ? const Icon(
-                                    Icons.check,
-                                    color: Color(0xFF059669),
-                                  )
-                                : null,
-                          ),
-                        ),
-                        PopupMenuItem<SortMode>(
-                          value: SortMode.timeAsc,
-                          child: ListTile(
-                            leading: const Text(
-                              '⏱️',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            title: const Text(
-                              'Time: Low → High',
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            subtitle: const Text(
-                              'Quick recipes first',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                            trailing: _sortMode == SortMode.timeAsc
-                                ? const Icon(
-                                    Icons.check,
-                                    color: Color(0xFF059669),
-                                  )
-                                : null,
-                          ),
-                        ),
-                        PopupMenuItem<SortMode>(
-                          value: SortMode.timeDesc,
-                          child: ListTile(
-                            leading: const Text(
-                              '🕒',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            title: const Text(
-                              'Time: High → Low',
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            subtitle: const Text(
-                              'Longer recipes first',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                            trailing: _sortMode == SortMode.timeDesc
-                                ? const Icon(
-                                    Icons.check,
-                                    color: Color(0xFF059669),
-                                  )
-                                : null,
-                          ),
-                        ),
-                        const PopupMenuDivider(),
-                        PopupMenuItem<SortMode>(
-                          value: SortMode.difficultyEasy,
-                          child: ListTile(
-                            leading: const Text(
-                              '🟢',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            title: const Text(
-                              'Difficulty: Easy',
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            subtitle: const Text(
-                              'Simple steps and ingredients',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                            trailing: _sortMode == SortMode.difficultyEasy
-                                ? const Icon(
-                                    Icons.check,
-                                    color: Color(0xFF059669),
-                                  )
-                                : null,
-                          ),
-                        ),
-                        PopupMenuItem<SortMode>(
-                          value: SortMode.difficultyMedium,
-                          child: ListTile(
-                            leading: const Text(
-                              '🟠',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            title: const Text(
-                              'Difficulty: Medium',
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            subtitle: const Text(
-                              'A little challenge',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                            trailing: _sortMode == SortMode.difficultyMedium
-                                ? const Icon(
-                                    Icons.check,
-                                    color: Color(0xFF059669),
-                                  )
-                                : null,
-                          ),
-                        ),
-                        PopupMenuItem<SortMode>(
-                          value: SortMode.difficultyHard,
-                          child: ListTile(
-                            leading: const Text(
-                              '🔴',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            title: const Text(
-                              'Difficulty: Hard',
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            subtitle: const Text(
-                              'For experienced cooks',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                            trailing: _sortMode == SortMode.difficultyHard
-                                ? const Icon(
-                                    Icons.check,
-                                    color: Color(0xFF059669),
-                                  )
-                                : null,
-                          ),
-                        ),
-                      ],
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: const Color(0xFF059669),
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.tune,
-                              size: 16,
-                              color: const Color(0xFF059669),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Sort',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.grey[800],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Recipe Grid
-              // Active sort indicator and modern list area
-              if (_sortMode != SortMode.none)
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE6FFEF),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: const Color(0xFFDCFCE7)),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.filter_list,
-                              size: 16,
-                              color: Color(0xFF059669),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              _sortMode == SortMode.timeAsc
-                                  ? 'Time: Low → High'
-                                  : _sortMode == SortMode.timeDesc
-                                  ? 'Time: High → Low'
-                                  : _sortMode == SortMode.difficultyEasy
-                                  ? 'Difficulty: Easy'
-                                  : _sortMode == SortMode.difficultyMedium
-                                  ? 'Difficulty: Medium'
-                                  : 'Difficulty: Hard',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF065F46),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _sortMode = SortMode.none;
-                            _applySort();
-                          });
-                        },
-                        child: const Text(
-                          'Reset',
-                          style: TextStyle(color: Color(0xFF065F46)),
-                        ),
-                      ),
-                      const Spacer(),
-                      // small hint
-                      Text(
-                        '${_visibleRecipes.length} results',
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ),
-
-              // Recipe Grid (modernized with animation)
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 350),
-                    switchInCurve: Curves.easeOutQuart,
-                    switchOutCurve: Curves.easeInQuart,
-                    child: GridView.builder(
-                      key: ValueKey<int>(
-                        _visibleRecipes.length + _sortMode.index,
-                      ),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            childAspectRatio: 0.72,
-                          ),
-                      itemCount: _visibleRecipes.length,
-                      itemBuilder: (context, index) {
-                        final recipe = _visibleRecipes[index];
-                        return RecipeCard(
-                          recipe: recipe,
-                          isSaved: _isRecipeSaved(recipe),
-                          onToggleSave: () async =>
-                              await _toggleSaveRecipe(recipe),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    RecipeDetailScreen(recipe: recipe),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ],
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -526,4 +415,165 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
+}
+
+class _SortMenu extends StatelessWidget {
+  final SortMode sortMode;
+  final ValueChanged<SortMode> onSelected;
+
+  const _SortMenu({Key? key, required this.sortMode, required this.onSelected})
+    : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<SortMode>(
+      onSelected: onSelected,
+      elevation: 8,
+      offset: const Offset(0, 44),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      color: Colors.white,
+      itemBuilder: (context) => [
+        PopupMenuItem<SortMode>(
+          value: SortMode.none,
+          child: _buildMenuTile(
+            context,
+            icon: '✨',
+            title: 'Default (All)',
+            subtitle: 'Show every recipe',
+            isSelected: sortMode == SortMode.none,
+          ),
+        ),
+        PopupMenuItem<SortMode>(
+          value: SortMode.timeAsc,
+          child: _buildMenuTile(
+            context,
+            icon: '⏱️',
+            title: 'Time: Low → High',
+            subtitle: 'Quick recipes first',
+            isSelected: sortMode == SortMode.timeAsc,
+          ),
+        ),
+        PopupMenuItem<SortMode>(
+          value: SortMode.timeDesc,
+          child: _buildMenuTile(
+            context,
+            icon: '🕒',
+            title: 'Time: High → Low',
+            subtitle: 'Longer recipes first',
+            isSelected: sortMode == SortMode.timeDesc,
+          ),
+        ),
+        const PopupMenuDivider(),
+        PopupMenuItem<SortMode>(
+          value: SortMode.difficultyEasy,
+          child: _buildMenuTile(
+            context,
+            icon: '🟢',
+            title: 'Difficulty: Easy',
+            subtitle: 'Simple steps and ingredients',
+            isSelected: sortMode == SortMode.difficultyEasy,
+          ),
+        ),
+        PopupMenuItem<SortMode>(
+          value: SortMode.difficultyMedium,
+          child: _buildMenuTile(
+            context,
+            icon: '🟠',
+            title: 'Difficulty: Medium',
+            subtitle: 'A little challenge',
+            isSelected: sortMode == SortMode.difficultyMedium,
+          ),
+        ),
+        PopupMenuItem<SortMode>(
+          value: SortMode.difficultyHard,
+          child: _buildMenuTile(
+            context,
+            icon: '🔴',
+            title: 'Difficulty: Hard',
+            subtitle: 'For experienced cooks',
+            isSelected: sortMode == SortMode.difficultyHard,
+          ),
+        ),
+      ],
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.95),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: const Color(0xFF059669), width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.tune, size: 18, color: Color(0xFF059669)),
+            SizedBox(width: 8),
+            Text(
+              'Sort',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF111827),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Widget _buildMenuTile(
+  BuildContext context, {
+  required String icon,
+  required String title,
+  required String subtitle,
+  required bool isSelected,
+}) {
+  return Container(
+    decoration: BoxDecoration(
+      color: isSelected ? const Color(0xFFECFDF5) : Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      border: isSelected
+          ? Border.all(color: const Color(0xFF059669), width: 1)
+          : null,
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+    child: Row(
+      children: [
+        Text(icon, style: const TextStyle(fontSize: 20)),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF111827),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)),
+              ),
+            ],
+          ),
+        ),
+        if (isSelected) ...[
+          const SizedBox(width: 8),
+          const Icon(Icons.check_circle, size: 18, color: Color(0xFF059669)),
+        ],
+      ],
+    ),
+  );
 }

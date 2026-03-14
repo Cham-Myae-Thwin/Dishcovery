@@ -13,156 +13,240 @@ class WelcomeScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFE5F5E1), Colors.white],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF059669), Color(0xFF10B981), Color(0xFF34D399)],
           ),
         ),
         child: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 12),
-                  // Back button (optional)
-                  if (onBack != null)
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_back),
-                        onPressed: onBack,
-                        color: Colors.black,
-                      ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isWide = constraints.maxWidth > 800;
+              final isMedium = constraints.maxWidth > 500;
+
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isWide ? 64 : (isMedium ? 32 : 20),
+                      vertical: isWide ? 40 : 24,
                     ),
-                  const SizedBox(height: 12),
-                  // Logo/Icon with animation
-                  TweenAnimationBuilder(
-                    tween: Tween<double>(begin: 0, end: 1),
-                    duration: const Duration(milliseconds: 800),
-                    builder: (context, double value, child) {
-                      return Transform.scale(
-                        scale: value,
-                        child: const Text('🍳', style: TextStyle(fontSize: 80)),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 24),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: isWide
+                          ? CrossAxisAlignment.start
+                          : CrossAxisAlignment.center,
+                      children: [
+                        // Back button
+                        if (onBack != null)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
+                              ),
+                              onPressed: onBack,
+                            ),
+                          ),
 
-                  // App Name
-                  const Text(
-                    'Dishcovery',
-                    style: TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF111827),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Tagline
-                  const Text(
-                    'Discover delicious recipes with ingredients you have at home',
-                    style: TextStyle(fontSize: 16, color: Color(0xFF6B7280)),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 40),
-
-                  // Features
-                  _buildFeature(
-                    emoji: '🔍',
-                    title: 'Search by Ingredient',
-                    description: 'Find recipes using what you already have',
-                  ),
-                  const SizedBox(height: 20),
-                  _buildFeature(
-                    emoji: '⏱️',
-                    title: 'Quick & Easy',
-                    description:
-                        'Step-by-step instructions for every skill level',
-                  ),
-                  const SizedBox(height: 20),
-                  _buildFeature(
-                    emoji: '❤️',
-                    title: 'Save Favorites',
-                    description: 'Build your personal cookbook',
-                  ),
-                  const SizedBox(height: 40),
-
-                  // Get Started Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: onGetStarted,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF059669),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                        // Logo and title
+                        Row(
+                          mainAxisAlignment: isWide
+                              ? MainAxisAlignment.start
+                              : MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.12),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Text(
+                                '🍳',
+                                style: TextStyle(fontSize: 40),
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Text(
+                              'Dishcovery',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: isWide ? 40 : 32,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
-                        elevation: 4,
-                      ),
-                      child: const Text(
-                        'Get Started',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+
+                        const SizedBox(height: 18),
+
+                        // Tagline
+                        SizedBox(
+                          width: isWide ? 640 : double.infinity,
+                          child: Text(
+                            'Discover delicious recipes using the ingredients you already have — fast, simple, and budget-friendly.',
+                            textAlign: isWide
+                                ? TextAlign.left
+                                : TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.95),
+                              fontSize: isWide ? 18 : 16,
+                              height: 1.4,
+                            ),
+                          ),
                         ),
-                      ),
+
+                        const SizedBox(height: 28),
+
+                        // Feature highlights
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          alignment: isWide
+                              ? WrapAlignment.start
+                              : WrapAlignment.center,
+                          children: [
+                            _miniFeature('🔍', 'Search by ingredient'),
+                            _miniFeature('⏱️', 'Quick & easy'),
+                            _miniFeature('❤️', 'Save favorites'),
+                          ],
+                        ),
+
+                        const SizedBox(height: 30),
+
+                        // Middle content: CTA + illustration
+                        if (isWide)
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // CTA column
+                              Expanded(
+                                flex: 5,
+                                child: _buildCta(onGetStarted, isWide),
+                              ),
+                              const SizedBox(width: 32),
+                              // Illustration
+                              Expanded(flex: 4, child: _illustrationCard()),
+                            ],
+                          )
+                        else ...[
+                          _buildCta(onGetStarted, isWide),
+                          const SizedBox(height: 24),
+                          _illustrationCard(),
+                        ],
+
+                        // Footer small note
+                        Padding(
+                          padding: const EdgeInsets.only(top: 24),
+                          child: Text(
+                            'Fast. Simple. Home-cooked.',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 40),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),
     );
   }
 
-  Widget _buildFeature({
-    required String emoji,
-    required String title,
-    required String description,
-  }) {
-    return Row(
-      children: [
-        Container(
-          width: 48,
-          height: 48,
-          decoration: const BoxDecoration(
-            color: Color(0xFFD1FAE5),
-            shape: BoxShape.circle,
+  Widget _buildCta(VoidCallback onGetStarted, bool isWide) {
+    return SizedBox(
+      width: isWide ? 420 : double.infinity,
+      child: Row(
+        mainAxisAlignment: isWide
+            ? MainAxisAlignment.start
+            : MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              onPressed: onGetStarted,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFF059669),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 6,
+              ),
+              child: const Text(
+                'Get Started',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ),
           ),
-          child: Center(
-            child: Text(emoji, style: const TextStyle(fontSize: 24)),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF111827),
+          const SizedBox(width: 12),
+          if (isWide)
+            OutlinedButton(
+              onPressed: () {},
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.white,
+                side: const BorderSide(color: Colors.white54),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 14,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                description,
-                style: const TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
-              ),
-            ],
+              child: const Text('How it works'),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _miniFeature(String emoji, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(emoji, style: const TextStyle(fontSize: 18)),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _illustrationCard() {
+    return Container(
+      height: 220,
+      margin: const EdgeInsets.symmetric(horizontal: 0),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.06),
+        borderRadius: BorderRadius.circular(18),
+        image: const DecorationImage(
+          image: NetworkImage(
+            'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=70',
+          ),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(Colors.black26, BlendMode.darken),
         ),
-      ],
+      ),
     );
   }
 }

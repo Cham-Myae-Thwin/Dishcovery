@@ -61,134 +61,171 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFE5F5E1), Colors.white],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF059669), Color(0xFF10B981), Color(0xFF34D399)],
           ),
         ),
         child: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isWide = constraints.maxWidth > 900;
+              final isMedium = constraints.maxWidth > 600;
+
+              return Column(
                 children: [
-                  const SizedBox(height: 40),
-                  // Header
-                  const Text(
-                    "What's your main ingredient?",
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF111827),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isWide ? 32 : 20,
+                      vertical: 18,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Find easy recipes with what you have.',
-                    style: TextStyle(fontSize: 16, color: Color(0xFF6B7280)),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Search Bar
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: const Color(0xFFE5E7EB),
-                        width: 2,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color.fromRGBO(0, 0, 0, 0.05),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: const InputDecoration(
-                        hintText: 'e.g., chicken, tomato, egg',
-                        prefixIcon: Icon(Icons.search, size: 24),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.all(20),
-                      ),
-                      style: const TextStyle(fontSize: 18),
-                      onSubmitted: (value) {
-                        if (value.isNotEmpty) {
-                          _handleSearch(value);
-                        }
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Popular Ingredients
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Popular ingredients',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF374151),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    children: _commonIngredients.map((ingredient) {
-                      return InkWell(
-                        onTap: () => _handleSearch(ingredient),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "What's your main ingredient?",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'Find easy recipes with what you have at home.',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFFE5E7EB),
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            border: Border.all(
-                              color: const Color(0xFFE5E7EB),
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(24),
+                            borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color.fromRGBO(0, 0, 0, 0.05),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
-                          child: Text(
-                            ingredient,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF374151),
+                          child: TextField(
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                              hintText: 'e.g., chicken, tomato, egg',
+                              prefixIcon: const Icon(Icons.search, size: 22),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.all(18),
                             ),
+                            style: const TextStyle(fontSize: 16),
+                            onSubmitted: (value) {
+                              if (value.isNotEmpty) {
+                                _handleSearch(value);
+                              }
+                            },
                           ),
                         ),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 60),
-                  Text(
-                    '🥘',
-                    style: const TextStyle(
-                      fontSize: 60,
-                      color: Color.fromRGBO(0, 0, 0, 0.2),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 40),
+
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(24),
+                        ),
+                      ),
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isWide
+                                ? 32
+                                : isMedium
+                                ? 24
+                                : 20,
+                            vertical: 20,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Popular ingredients',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF111827),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Wrap(
+                                spacing: 10,
+                                runSpacing: 10,
+                                children: _commonIngredients.map((ingredient) {
+                                  return InkWell(
+                                    onTap: () => _handleSearch(ingredient),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 18,
+                                        vertical: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFF9FAFB),
+                                        borderRadius: BorderRadius.circular(
+                                          999,
+                                        ),
+                                        border: Border.all(
+                                          color: const Color(0xFFE5E7EB),
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        ingredient,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xFF374151),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                              const SizedBox(height: 40),
+                              Center(
+                                child: Column(
+                                  children: const [
+                                    Text(
+                                      '🥘',
+                                      style: TextStyle(
+                                        fontSize: 60,
+                                        color: Color(0xFFE5E7EB),
+                                      ),
+                                    ),
+                                    SizedBox(height: 12),
+                                    Text(
+                                      'Search by ingredient to find recipes',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFF9CA3AF),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
-              ),
-            ),
+              );
+            },
           ),
         ),
       ),
@@ -230,111 +267,224 @@ class SearchResultsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final savedIds = ref.watch(savedRecipesProvider);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFE5F5E1),
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: Text(
-          'Results for "$query"',
-          style: const TextStyle(color: Color(0xFF111827)),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF059669), Color(0xFF10B981), Color(0xFF34D399)],
+          ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: results.isEmpty
-            ? Center(child: Text('No recipes found for "$query"'))
-            : GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 0.75,
-                ),
-                itemCount: results.length,
-                itemBuilder: (context, index) {
-                  final recipe = results[index];
-                  final isSaved = savedIds.contains(recipe.id);
-                  return RecipeCard(
-                    recipe: recipe,
-                    isSaved: isSaved,
-                    onToggleSave: () async {
-                      final notifier = ref.read(savedRecipesProvider.notifier);
-                      final nowSaved = await notifier.toggleAndGet(recipe.id);
-                      final messenger = ScaffoldMessenger.of(context);
-                      messenger.hideCurrentSnackBar();
-                      messenger.showSnackBar(
-                        SnackBar(
-                          behavior: SnackBarBehavior.floating,
-                          backgroundColor: nowSaved
-                              ? const Color(0xFFDCFCE7)
-                              : const Color(0xFFFEE2E2),
-                          elevation: 6,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isWide = constraints.maxWidth > 900;
+              final isMedium = constraints.maxWidth > 600;
+              final crossAxisCount = isWide
+                  ? 4
+                  : isMedium
+                  ? 3
+                  : 2;
+
+              return Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isWide ? 32 : 20,
+                      vertical: 18,
+                    ),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
                           ),
-                          content: Row(
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                nowSaved ? '💾' : '🗑️',
-                                style: const TextStyle(fontSize: 20),
+                                'Results for "$query"',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  nowSaved
-                                      ? 'Saved to My Cookbook'
-                                      : 'Removed from My Cookbook',
-                                  style: TextStyle(
-                                    color: nowSaved
-                                        ? Colors.green[900]
-                                        : Colors.red[900],
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                              const SizedBox(height: 4),
+                              Text(
+                                results.isEmpty
+                                    ? 'No recipes found'
+                                    : '${results.length} recipes found',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFFE5E7EB),
                                 ),
                               ),
                             ],
                           ),
-                          duration: const Duration(seconds: 2),
                         ),
-                      );
-                    },
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              RecipeDetailScreen(recipe: recipe),
+                      ],
+                    ),
+                  ),
+
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(24),
                         ),
-                      );
-                    },
-                  );
-                },
-              ),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(
+                          isWide
+                              ? 32
+                              : isMedium
+                              ? 24
+                              : 16,
+                        ),
+                        child: results.isEmpty
+                            ? const Center(
+                                child: Text(
+                                  'Try a different ingredient or spelling.',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Color(0xFF6B7280),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              )
+                            : GridView.builder(
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: crossAxisCount,
+                                      crossAxisSpacing: 16,
+                                      mainAxisSpacing: 16,
+                                      childAspectRatio: isWide
+                                          ? 0.9
+                                          : isMedium
+                                          ? 0.8
+                                          : 0.75,
+                                    ),
+                                itemCount: results.length,
+                                itemBuilder: (context, index) {
+                                  final recipe = results[index];
+                                  final isSaved = savedIds.contains(recipe.id);
+                                  return RecipeCard(
+                                    recipe: recipe,
+                                    isSaved: isSaved,
+                                    onToggleSave: () async {
+                                      final notifier = ref.read(
+                                        savedRecipesProvider.notifier,
+                                      );
+                                      final nowSaved = await notifier
+                                          .toggleAndGet(recipe.id);
+                                      final messenger = ScaffoldMessenger.of(
+                                        context,
+                                      );
+                                      messenger.hideCurrentSnackBar();
+                                      messenger.showSnackBar(
+                                        SnackBar(
+                                          behavior: SnackBarBehavior.floating,
+                                          backgroundColor: nowSaved
+                                              ? const Color(0xFFDCFCE7)
+                                              : const Color(0xFFFEE2E2),
+                                          elevation: 6,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          content: Row(
+                                            children: [
+                                              const Text(
+                                                '💾',
+                                                style: TextStyle(fontSize: 20),
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: Text(
+                                                  nowSaved
+                                                      ? 'Saved to My Cookbook'
+                                                      : 'Removed from My Cookbook',
+                                                  style: TextStyle(
+                                                    color: nowSaved
+                                                        ? Colors.green[900]
+                                                        : Colors.red[900],
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          duration: const Duration(seconds: 2),
+                                        ),
+                                      );
+                                    },
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              RecipeDetailScreen(
+                                                recipe: recipe,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
+        backgroundColor: const Color(0xFF059669),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
+        type: BottomNavigationBarType.fixed,
         onTap: (index) {
-          // First notify the parent (HomeScreen) to update its state.
           onTabTapped(index);
-          // If the user tapped a tab other than the Search tab, close
-          // the SearchResultsScreen so the HomeScreen (now updated)
-          // becomes visible. Keep the results route open when tapping
-          // the Search tab itself.
+          // If navigating away from search, pop the results screen
           if (index != 1) {
             Navigator.of(context).pop();
           }
         },
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFF059669),
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white70,
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'My Cookbook'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search_outlined),
+            activeIcon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book_outlined),
+            activeIcon: Icon(Icons.book),
+            label: 'My Cookbook',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
         ],
       ),
     );
