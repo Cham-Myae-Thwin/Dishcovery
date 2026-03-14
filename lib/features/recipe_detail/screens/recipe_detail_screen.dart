@@ -41,18 +41,18 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFE5F5E1), Colors.white],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF059669), Color(0xFF10B981), Color(0xFF34D399)],
           ),
         ),
         child: CustomScrollView(
           slivers: [
             // App Bar with Image
             SliverAppBar(
-              expandedHeight: 300,
+              expandedHeight: 320,
               pinned: true,
-              backgroundColor: const Color.fromRGBO(229, 245, 225, 0.95),
+              backgroundColor: Colors.transparent,
               elevation: 0,
               leading: Container(
                 margin: const EdgeInsets.all(8),
@@ -61,7 +61,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color.fromRGBO(0, 0, 0, 0.1),
+                      color: Colors.transparent,
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
@@ -180,7 +180,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            const Color.fromRGBO(0, 0, 0, 0.6),
+                            const Color.fromRGBO(0, 0, 0, 0.65),
                           ],
                         ),
                       ),
@@ -191,7 +191,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                       left: 0,
                       right: 0,
                       child: Container(
-                        padding: const EdgeInsets.all(24),
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -199,9 +199,11 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                               widget.recipe.title,
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 24,
+                                fontSize: 26,
                                 fontWeight: FontWeight.bold,
                               ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 12),
                             Row(
@@ -260,168 +262,179 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
 
             // Content
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Ingredients Section
-                    const Row(
-                      children: [
-                        Text('📝', style: TextStyle(fontSize: 24)),
-                        SizedBox(width: 8),
-                        Text(
-                          'Ingredients',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    ...displayedIngredients.map((ingredient) {
-                      return Container(
-                        margin: const EdgeInsets.symmetric(vertical: 6),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF9FAFB),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: const Color(0xFFE5E7EB)),
-                        ),
-                        child: Row(
-                          children: [
-                            const Text(
-                              '•',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Color(0xFF059669),
-                              ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Ingredients Section
+                      Row(
+                        children: const [
+                          Text('📝', style: TextStyle(fontSize: 22)),
+                          SizedBox(width: 8),
+                          Text(
+                            'Ingredients',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF111827),
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                ingredient,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Color(0xFF111827),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      ...displayedIngredients.map((ingredient) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF9FAFB),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: const Color(0xFFE5E7EB)),
+                          ),
+                          child: Row(
+                            children: [
+                              const Text(
+                                '•',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Color(0xFF059669),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                    if (hasMoreIngredients)
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _showAllIngredients = !_showAllIngredients;
-                          });
-                        },
-                        child: Text(
-                          _showAllIngredients
-                              ? 'Show less'
-                              : 'See more (${widget.recipe.ingredients.length - 3} more)',
-                          style: const TextStyle(
-                            color: Color(0xFF059669),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-
-                    const SizedBox(height: 32),
-
-                    // Instructions Section
-                    const Row(
-                      children: [
-                        Text('👨‍🍳', style: TextStyle(fontSize: 24)),
-                        SizedBox(width: 8),
-                        Text(
-                          'Instructions',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    ...widget.recipe.instructions.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final instruction = entry.value;
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 16),
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF9FAFB),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFF3F4F6)),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 32,
-                              height: 32,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF059669),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
+                              const SizedBox(width: 12),
+                              Expanded(
                                 child: Text(
-                                  '${index + 1}',
+                                  ingredient,
                                   style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Color(0xFF111827),
                                   ),
                                 ),
                               ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      if (hasMoreIngredients)
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _showAllIngredients = !_showAllIngredients;
+                            });
+                          },
+                          child: Text(
+                            _showAllIngredients
+                                ? 'Show less'
+                                : 'See more (${widget.recipe.ingredients.length - 3} more)',
+                            style: const TextStyle(
+                              color: Color(0xFF059669),
+                              fontWeight: FontWeight.w600,
                             ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
-                                instruction,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  height: 1.5,
+                          ),
+                        ),
+
+                      const SizedBox(height: 32),
+
+                      // Instructions Section
+                      Row(
+                        children: const [
+                          Text('👨‍🍳', style: TextStyle(fontSize: 22)),
+                          SizedBox(width: 8),
+                          Text(
+                            'Instructions',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF111827),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      ...widget.recipe.instructions.asMap().entries.map((
+                        entry,
+                      ) {
+                        final index = entry.key;
+                        final instruction = entry.value;
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF9FAFB),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFFF3F4F6)),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 32,
+                                height: 32,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFF059669),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${index + 1}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Text(
+                                  instruction,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    height: 1.5,
+                                    color: Color(0xFF111827),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
 
-                    // Tips Section
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFEF3C7),
-                        border: Border.all(color: const Color(0xFFFDE68A)),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                              text: '💡 Pro Tip: ',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            TextSpan(
-                              text:
-                                  'Add avocado and fresh cilantro for extra flavor and creaminess!',
-                            ),
-                          ],
+                      // Tips Section
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFEF3C7),
+                          border: Border.all(color: const Color(0xFFFDE68A)),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        style: TextStyle(fontSize: 16),
+                        child: const Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '💡 Pro Tip: ',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(
+                                text:
+                                    'Add avocado and fresh cilantro for extra flavor and creaminess!',
+                              ),
+                            ],
+                          ),
+                          style: TextStyle(fontSize: 16),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 32),
-                  ],
+                      const SizedBox(height: 32),
+                    ],
+                  ),
                 ),
               ),
             ),
