@@ -14,10 +14,12 @@ dependencies:
   shared_preferences: ^2.2.0
   flutter_riverpod: ^2.3.6
   cached_network_image: ^3.2.3
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mocktail: ^1.0.5
 
 flutter:
   uses-material-design: true

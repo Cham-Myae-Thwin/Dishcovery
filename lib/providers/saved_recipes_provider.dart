@@ -1,24 +1,22 @@
+import 'package:dishcovery/services/persistent_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// Use conditional import for a small storage abstraction so web uses
-// window.localStorage (more robust for hosting/service-worker scenarios)
-import '../services/persistent_storage_stub.dart'
-    if (dart.library.html) '../services/persistent_storage_web.dart';
 
 const _savedKey = 'saved_recipe_ids';
 
 class SavedRecipesNotifier extends StateNotifier<List<String>> {
-  SavedRecipesNotifier() : super([]) {
+  final PersistentStorage _storage;
+
+  SavedRecipesNotifier(this._storage) : super([]) {
     _load();
   }
 
   Future<void> _load() async {
-    final stored = await persistentStorage.readStringList(_savedKey);
+    final stored = await _storage.readStringList(_savedKey);
     state = stored ?? [];
   }
 
   Future<void> _persist() async {
-    await persistentStorage.writeStringList(_savedKey, state);
+    await _storage.writeStringList(_savedKey, state);
   }
 
   bool isSaved(String id) => state.contains(id);
@@ -53,5 +51,5 @@ class SavedRecipesNotifier extends StateNotifier<List<String>> {
 
 final savedRecipesProvider =
     StateNotifierProvider<SavedRecipesNotifier, List<String>>(
-      (ref) => SavedRecipesNotifier(),
-    );
+  (ref) => SavedRecipesNotifier(ref.watch(persistentStorageProvider)),
+);
