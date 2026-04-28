@@ -3,6 +3,8 @@ name: dishcovery
 description: Dishcovery - simple recipe finder MVP
 publish_to: 'none'
 
+version: 3.0.0+4
+
 environment:
   sdk: '^3.10.0'
   flutter: '>=3.0.0'

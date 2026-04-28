@@ -1,6 +1,6 @@
 import 'package:dishcovery/features/recipe_detail/screens/recipe.dart';
+import 'package:dishcovery/widgets/dishcovery_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class RecipeCard extends StatelessWidget {
   final Recipe recipe;
@@ -70,28 +70,11 @@ class RecipeCard extends StatelessWidget {
                   ),
                   child: AspectRatio(
                     aspectRatio: 4 / 3,
-                    child: CachedNetworkImage(
+                    child: DishcoveryNetworkImage(
                       imageUrl: recipe.image,
-                      fit: BoxFit.cover,
                       memCacheWidth: 300,
                       memCacheHeight: 225,
                       fadeInDuration: const Duration(milliseconds: 150),
-                      fadeOutDuration: const Duration(milliseconds: 150),
-                      placeholder: (context, url) => Container(
-                        color: const Color(0xFFF3F4F6),
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation(
-                              Color(0xFF059669),
-                            ),
-                          ),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: const Color(0xFFF3F4F6),
-                        child: const Center(child: Icon(Icons.broken_image)),
-                      ),
                     ),
                   ),
                 ),

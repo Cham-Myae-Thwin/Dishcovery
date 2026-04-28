@@ -1,8 +1,8 @@
 ﻿import 'package:dishcovery/features/recipe_detail/screens/recipe.dart';
+import 'package:dishcovery/widgets/dishcovery_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dishcovery/providers/saved_recipes_provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class RecipeDetailScreen extends ConsumerStatefulWidget {
   final Recipe recipe;
@@ -150,27 +150,11 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    CachedNetworkImage(
+                    DishcoveryNetworkImage(
                       imageUrl: widget.recipe.image,
-                      fit: BoxFit.cover,
                       memCacheWidth: 600,
                       memCacheHeight: 400,
                       fadeInDuration: const Duration(milliseconds: 200),
-                      placeholder: (context, url) => Container(
-                        color: const Color(0xFFF3F4F6),
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation(
-                              Color(0xFF059669),
-                            ),
-                          ),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: const Color(0xFFF3F4F6),
-                        child: const Center(child: Icon(Icons.broken_image)),
-                      ),
                     ),
                     // Gradient overlay
                     Container(

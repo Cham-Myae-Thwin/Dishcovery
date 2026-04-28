@@ -1,0 +1,10 @@
+-keep class com.mfu.dishcovery.MainActivity { *; }
+-keep class io.flutter.app.FlutterApplication { *; }
+-keep class io.flutter.plugin.common.** { *; }
+-keep class io.flutter.plugin.platform.** { *; }
+-keep class io.flutter.embedding.engine.** { *; }
+-keep class io.flutter.embedding.android.** { *; }
+-keep class io.flutter.plugins.** { *; }
+-dontwarn io.flutter.plugins.**
+-keep class com.google.android.play.core.** { *; }
+-dontwarn com.google.android.play.core.**

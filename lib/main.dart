@@ -4,9 +4,11 @@ import 'package:dishcovery/features/landing/screens/landing_screen.dart';
 import 'package:dishcovery/services/image_cache_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  setUrlStrategy(PathUrlStrategy());
   ImageCacheConfig.configure();
   runApp(const ProviderScope(child: DishcoveryApp()));
 }
@@ -19,8 +21,39 @@ class DishcoveryApp extends StatefulWidget {
 }
 
 class _DishcoveryAppState extends State<DishcoveryApp> {
-  bool _showWelcome = true;
-  bool _showLanding = true;
+  Route<dynamic> _buildRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case '/':
+      case '/landing-page':
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (context) => LandingScreen(
+            onContinue: () => Navigator.of(context).pushNamed('/welcome'),
+          ),
+        );
+      case '/welcome':
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (context) => WelcomeScreen(
+            onGetStarted: () => Navigator.of(context).pushNamed('/home'),
+            onBack: () => Navigator.of(context).pop(),
+          ),
+        );
+      case '/home':
+      case '/browse':
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (context) => const HomeScreen(),
+        );
+      default:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (context) => LandingScreen(
+            onContinue: () => Navigator.of(context).pushNamed('/welcome'),
+          ),
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,28 +65,7 @@ class _DishcoveryAppState extends State<DishcoveryApp> {
         scaffoldBackgroundColor: const Color(0xFFF9FAFB),
         fontFamily: 'Inter',
       ),
-      home: _showLanding
-          ? LandingScreen(
-              onContinue: () {
-                setState(() {
-                  _showLanding = false;
-                });
-              },
-            )
-          : _showWelcome
-          ? WelcomeScreen(
-              onGetStarted: () {
-                setState(() {
-                  _showWelcome = false;
-                });
-              },
-              onBack: () {
-                setState(() {
-                  _showLanding = true;
-                });
-              },
-            )
-          : const HomeScreen(),
+      onGenerateRoute: _buildRoute,
     );
   }
 }

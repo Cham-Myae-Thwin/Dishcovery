@@ -1,5 +1,5 @@
+import 'package:dishcovery/widgets/dishcovery_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class LandingScreen extends StatelessWidget {
   final VoidCallback onContinue;
@@ -255,42 +255,10 @@ class LandingScreen extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           // Food collage image - using CachedNetworkImage for better performance
-          CachedNetworkImage(
+          DishcoveryNetworkImage(
             imageUrl:
                 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=70',
-            fit: BoxFit.cover,
             memCacheWidth: 400,
-            placeholder: (context, url) => Container(
-              color: const Color(0xFFD1FAE5),
-              child: const Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(Color(0xFF059669)),
-                  strokeWidth: 2,
-                ),
-              ),
-            ),
-            errorWidget: (context, url, error) => Container(
-              color: const Color(0xFFD1FAE5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.restaurant_menu,
-                    size: 64,
-                    color: Color(0xFF059669),
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    'Dishcovery',
-                    style: TextStyle(
-                      color: Color(0xFF059669),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ),
           // Gradient overlay
           Container(

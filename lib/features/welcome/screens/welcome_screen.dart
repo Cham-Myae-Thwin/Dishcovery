@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:dishcovery/widgets/dishcovery_network_image.dart';
+import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
   final VoidCallback onGetStarted;
@@ -219,16 +220,18 @@ class WelcomeScreen extends StatelessWidget {
     return Container(
       height: 220,
       margin: const EdgeInsets.symmetric(horizontal: 0),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.06),
-        borderRadius: BorderRadius.circular(18),
-        image: const DecorationImage(
-          image: NetworkImage(
-            'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=70',
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(18)),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          const DishcoveryNetworkImage(
+            imageUrl:
+                'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=70',
+            memCacheWidth: 600,
           ),
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(Colors.black26, BlendMode.darken),
-        ),
+          Container(color: Colors.black26),
+        ],
       ),
     );
   }
